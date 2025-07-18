@@ -114,12 +114,11 @@ require (
 	golang.org/x/arch v0.4.0 // indirect
 	golang.org/x/exp v0.0.0-20240529005216-23cca8864a10 // indirect
 	golang.org/x/net v0.38.0 // indirect
-	golang.org/x/oauth2 v0.15.0 // indirect
+	golang.org/x/oauth2 v0.27.0 // indirect
 	golang.org/x/sync v0.14.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/time v0.6.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
-	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
