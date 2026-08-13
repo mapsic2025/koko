@@ -60,7 +60,8 @@ type bulkResponse struct {
 func (es ESCommandStorage) bulkActionBuffer(action string, commands []*model.Command) *bytes.Buffer {
 	var buf bytes.Buffer
 	for _, item := range commands {
-		meta := []byte(fmt.Sprintf(`{ "%s" : { } }%s`, action, "\n"))
+		logger.Debugf("ES bulk action: %s, docType: %s", action, es.DocType)
+		meta := []byte(fmt.Sprintf(`{ "%s" : { "op_type": "%s" } }%s`, action, action, "\n"))
 		data, _ := json.Marshal(item)
 		data = append(data, "\n"...)
 		buf.Write(meta)
@@ -82,7 +83,7 @@ func (es ESCommandStorage) BulkSaveEs(commands []*model.Command) error {
 	}
 	opts := make([]func(*esapi.BulkRequest), 0, 2)
 	opts = append(opts, esClient.Bulk.WithIndex(es.Index))
-	opts = append(opts, esClient.Bulk.WithDocumentType(es.DocType))
+	logger.Debugf("ES bulk request options: index=%s, docType=%s", es.Index, es.DocType)
 	response, err := esClient.Bulk(buf, opts...)
 	if err != nil {
 		logger.Errorf("ES client bulk save err: %s", err)
@@ -103,6 +104,7 @@ func (es ESCommandStorage) BulkSaveEs8(commands []*model.Command) (err error) {
 		logger.Errorf("ES8 new client err: %s", err)
 		return err
 	}
+	logger.Debugf("ES8 bulk request options: index=%s", es.Index)
 	response, err := esClient.Bulk(buf, esClient.Bulk.WithIndex(es.Index))
 	if err != nil {
 		logger.Errorf("ES8 client bulk save err: %s", err)
@@ -156,17 +158,21 @@ func (es ESCommandStorage) handleResp(action string, isErr bool, reader io.Reade
 func (es ESCommandStorage) IsEs8() bool {
 	esClient, err := es.createEsClient()
 	if err != nil {
+		logger.Errorf("Failed to create ES client: %s", err)
 		return false
 	}
 	resp, err1 := esClient.Info()
 	if err1 != nil {
+		logger.Errorf("Failed to get ES info: %s", err1)
 		return false
 	}
 	defer resp.Body.Close()
 	var infoResp InfoResponse
 	if err2 := json.NewDecoder(resp.Body).Decode(&infoResp); err2 != nil {
+		logger.Errorf("Failed to decode ES info response: %s", err2)
 		return false
 	}
+	logger.Debugf("ES version: %s", infoResp.Version.Number)
 	return infoResp.Version.Number[0] == '8'
 }
 
