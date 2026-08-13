@@ -1,4 +1,4 @@
-FROM jumpserver/koko-base:20260716_025927 AS stage-build
+FROM registry.cn-hangzhou.aliyuncs.com/mapsic/koko-base:20260716_025927 AS stage-build
 WORKDIR /opt/koko
 ARG TARGETARCH
 COPY . .
