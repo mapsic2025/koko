@@ -33,7 +33,9 @@ ARG DEPENDENCIES="                    \
         bash-completion               \
         less                          \
         redis-tools                   \
-        ca-certificates"
+        ca-certificates               \
+        curl                          \
+        vim-tiny"
 
 ARG APT_MIRROR=http://deb.debian.org
 
